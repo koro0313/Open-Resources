@@ -449,11 +449,12 @@ export default function Reader() {
     }
   }, [pages, loading, error, currentPageIndex, docId, pageName, navigate])
 
-  // Reset scroll state on page change
+  // Reset scroll state and scroll container to top on page change
   useEffect(() => {
     setIsScrollingDown(false)
     setLastScrollTop(0)
-  }, [currentPageIndex])
+    document.getElementById("reader-main")?.scrollTo({ top: 0 })
+  }, [pageName])
 
   // Reset scroll state when sidebar is opened
   useEffect(() => {
@@ -750,11 +751,10 @@ export default function Reader() {
                           color: t.paperFg,
                           borderColor: isSelected ? "#ff385c" : t.border,
                         }}
-                        className={`group relative flex flex-col items-center justify-center py-2 px-1 rounded-md border text-center transition-all ${
-                          isSelected
-                            ? "ring-2 ring-[#ff385c]/35 border-[#ff385c]"
-                            : "hover:scale-[1.02] hover:shadow-sm"
-                        }`}
+                        className={`group relative flex flex-col items-center justify-center py-2 px-1 rounded-md border text-center transition-all ${isSelected
+                          ? "ring-2 ring-[#ff385c]/35 border-[#ff385c]"
+                          : "hover:scale-[1.02] hover:shadow-sm"
+                          }`}
                         title={t.name}
                       >
                         {/* Theme text preview */}
@@ -784,11 +784,10 @@ export default function Reader() {
                       key={f.id}
                       onClick={() => setFontFamily(f.id as any)}
                       style={f.previewStyle}
-                      className={`text-xs py-2 border rounded-lg font-medium transition-all ${
-                        fontFamily === f.id
-                          ? "border-[#ff385c] text-[#ff385c] bg-black/[0.03] dark:bg-white/[0.03]"
-                          : "reader-themed-border-divider hover:border-neutral-400 dark:hover:border-neutral-500 bg-transparent opacity-85"
-                      }`}
+                      className={`text-xs py-2 border rounded-lg font-medium transition-all ${fontFamily === f.id
+                        ? "border-[#ff385c] text-[#ff385c] bg-black/[0.03] dark:bg-white/[0.03]"
+                        : "reader-themed-border-divider hover:border-neutral-400 dark:hover:border-neutral-500 bg-transparent opacity-85"
+                        }`}
                     >
                       {f.label}
                     </button>
@@ -832,11 +831,10 @@ export default function Reader() {
                       <button
                         key={lh.id}
                         onClick={() => setLineHeight(lh.id as any)}
-                        className={`flex-1 text-[11px] py-1.5 rounded-md font-medium text-center transition-all ${
-                          lineHeight === lh.id
-                            ? "bg-[#ff385c] text-white shadow-sm font-bold"
-                            : "hover:bg-black/5 dark:hover:bg-white/5 opacity-80"
-                        }`}
+                        className={`flex-1 text-[11px] py-1.5 rounded-md font-medium text-center transition-all ${lineHeight === lh.id
+                          ? "bg-[#ff385c] text-white shadow-sm font-bold"
+                          : "hover:bg-black/5 dark:hover:bg-white/5 opacity-80"
+                          }`}
                       >
                         {lh.label}
                       </button>
@@ -856,11 +854,10 @@ export default function Reader() {
                       <button
                         key={w.id}
                         onClick={() => setReaderWidth(w.id as any)}
-                        className={`flex-1 text-[11px] py-1.5 rounded-md font-medium text-center transition-all ${
-                          readerWidth === w.id
-                            ? "bg-[#ff385c] text-white shadow-sm font-bold"
-                            : "hover:bg-black/5 dark:hover:bg-white/5 opacity-80"
-                        }`}
+                        className={`flex-1 text-[11px] py-1.5 rounded-md font-medium text-center transition-all ${readerWidth === w.id
+                          ? "bg-[#ff385c] text-white shadow-sm font-bold"
+                          : "hover:bg-black/5 dark:hover:bg-white/5 opacity-80"
+                          }`}
                       >
                         {w.label}
                       </button>
@@ -883,11 +880,10 @@ export default function Reader() {
                       <button
                         key={al.id}
                         onClick={() => setAlignment(al.id as any)}
-                        className={`flex items-center justify-center gap-2 text-xs py-2 border rounded-lg font-medium transition-all ${
-                          isSelected
-                            ? "border-[#ff385c] text-[#ff385c] bg-black/[0.03] dark:bg-white/[0.03]"
-                            : "reader-themed-border-divider hover:border-neutral-400 dark:hover:border-neutral-500 bg-transparent opacity-85"
-                        }`}
+                        className={`flex items-center justify-center gap-2 text-xs py-2 border rounded-lg font-medium transition-all ${isSelected
+                          ? "border-[#ff385c] text-[#ff385c] bg-black/[0.03] dark:bg-white/[0.03]"
+                          : "reader-themed-border-divider hover:border-neutral-400 dark:hover:border-neutral-500 bg-transparent opacity-85"
+                          }`}
                       >
                         <Icon className="h-3.5 w-3.5" />
                         <span>{al.label}</span>
@@ -1004,7 +1000,7 @@ export default function Reader() {
             <div className="w-full max-w-4xl flex-1 flex flex-col relative transition-all duration-300 animate-in fade-in slide-in-from-bottom-2 duration-300">
               {/* Header / Hero Section */}
               <div className="text-center md:text-left mb-8 md:mb-12 flex flex-col md:flex-row items-center md:items-start gap-6 md:gap-8 border-b reader-themed-border-divider pb-6 md:pb-10 pt-2 md:pt-4">
-                <div 
+                <div
                   className="w-40 h-40 md:w-48 md:h-48 rounded-2xl shadow-xl flex flex-col items-center justify-center text-white shrink-0"
                   style={{ background: "linear-gradient(135deg, #ff385c 0%, #e00b41 100%)" }}
                 >
@@ -1029,7 +1025,7 @@ export default function Reader() {
                     {bookTitle}
                   </h2>
                   <p className="text-sm md:text-base opacity-75 leading-relaxed max-w-2xl mb-6">
-                    A collection of educational proposals and design documentation outlining modern reservation structures, educational architectures, and resource distribution models.
+                    Detailed documentation of Open Education Model, explaining each of it's pillars in details and discussing how it works and how to implement it in real life.
                   </p>
                   {pages.length > 0 && (
                     <div className="flex justify-center md:justify-start">
@@ -1044,7 +1040,7 @@ export default function Reader() {
               </div>
 
               {/* Chapters list grid */}
-              <div className="space-y-4 pb-12">
+              <div className="space-y-4 pb-12 px-2 sm:px-0">
                 <h3 className="text-sm font-bold uppercase tracking-wider opacity-70 mb-4 text-left">
                   Table of Contents
                 </h3>
@@ -1055,14 +1051,14 @@ export default function Reader() {
                       .map(line => line.trim())
                       .filter(line => line.length > 0 && !line.startsWith("#") && !line.startsWith(">"))
                       .find(line => line.length > 10) || "No description available."
-                    
-                    const cleanDesc = firstParagraph.length > 120 
-                      ? firstParagraph.slice(0, 120) + "..." 
+
+                    const cleanDesc = firstParagraph.length > 120
+                      ? firstParagraph.slice(0, 120) + "..."
                       : firstParagraph
 
                     return (
-                      <Link 
-                        key={p.filename} 
+                      <Link
+                        key={p.filename}
                         to={`/reader/${docId}/${p.slug}`}
                         className="group block"
                       >
@@ -1107,38 +1103,40 @@ export default function Reader() {
               </Link>
             </div>
           ) : (
-            <div className={`w-full flex-1 flex flex-col items-center relative transition-all duration-300 ${getWidthClass()}`}>
+            <>
+              <div className={`w-full flex-1 flex flex-col items-center relative transition-all duration-300 ${getWidthClass()}`}>
 
-              {/* Paper Canvas (Book Sheet) */}
-              <div
-                className="reader-themed-paper relative w-full rounded-md border p-5 sm:p-8 md:p-12 flex-1 flex flex-col min-h-[400px] md:min-h-[500px] transition-all duration-300 select-text pb-24 mb-6"
-                style={{ fontSize: `${fontSize}px` }}
-              >
-                {/* Visual Accent Corner Elements */}
-                <div className="absolute top-0 left-0 h-4 w-4 border-t-2 border-l-2 border-[#ff385c]/30 rounded-tl-md pointer-events-none" />
-                <div className="absolute bottom-0 right-0 h-4 w-4 border-b-2 border-r-2 border-[#ff385c]/30 rounded-br-md pointer-events-none" />
+                {/* Paper Canvas (Book Sheet) */}
+                <div
+                  className="reader-themed-paper relative w-full rounded-md border p-5 sm:p-8 md:p-12 flex-1 flex flex-col min-h-[400px] md:min-h-[500px] transition-all duration-300 select-text pb-24 mb-6"
+                  style={{ fontSize: `${fontSize}px` }}
+                >
+                  {/* Visual Accent Corner Elements */}
+                  <div className="absolute top-0 left-0 h-4 w-4 border-t-2 border-l-2 border-[#ff385c]/30 rounded-tl-md pointer-events-none" />
+                  <div className="absolute bottom-0 right-0 h-4 w-4 border-b-2 border-r-2 border-[#ff385c]/30 rounded-br-md pointer-events-none" />
 
-                <article
-                  className="markdown-preview text-left flex-1 break-words prose dark:prose-invert max-w-none"
-                  style={{
-                    fontSize: "inherit",
-                    ...getFontFamilyStyle(),
-                    ...getLineHeightStyle(),
-                    textAlign: alignment === "justify" ? "justify" : "left",
-                  }}
-                  dangerouslySetInnerHTML={{ __html: parseMarkdown(activePage ? activePage.content : "") }}
-                />
+                  <article
+                    className="markdown-preview text-left flex-1 break-words prose dark:prose-invert max-w-none"
+                    style={{
+                      fontSize: "inherit",
+                      ...getFontFamilyStyle(),
+                      ...getLineHeightStyle(),
+                      textAlign: alignment === "justify" ? "justify" : "left",
+                    }}
+                    dangerouslySetInnerHTML={{ __html: parseMarkdown(activePage ? activePage.content : "") }}
+                  />
 
-                {/* Sub-status Indicator */}
-                <div className="mt-8 pt-4 border-t reader-themed-border-divider flex items-center justify-between text-xs opacity-60 select-none pointer-events-none">
-                  <span>{activePage ? activePage.wordCount.toLocaleString() : 0} words</span>
-                  <span>Chapter {currentPageIndex + 1} of {pages.length}</span>
+                  {/* Sub-status Indicator */}
+                  <div className="mt-8 pt-4 border-t reader-themed-border-divider flex items-center justify-between text-xs opacity-60 select-none pointer-events-none">
+                    <span>{activePage ? activePage.wordCount.toLocaleString() : 0} words</span>
+                    <span>Chapter {currentPageIndex + 1} of {pages.length}</span>
+                  </div>
                 </div>
               </div>
 
               {/* Sticky Fixed Bottom Navigation Controls */}
               <div
-                className={`sticky bottom-6 mt-8 w-full z-40 transition-all duration-300 ease-in-out px-2 sm:px-0
+                className={`sticky bottom-0 mt-8 w-full max-w-2xl z-40 transition-all duration-300 ease-in-out px-2 sm:px-0
                   ${isScrollingDown ? "translate-y-24 opacity-0 pointer-events-none" : "translate-y-0 opacity-100"}`}
               >
                 <div className="reader-themed-paper flex items-center justify-between gap-4 p-3 rounded-full border shadow-lg backdrop-blur-md">
@@ -1204,8 +1202,7 @@ export default function Reader() {
 
                 </div>
               </div>
-
-            </div>
+            </>
           )}
         </main>
 
