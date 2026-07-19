@@ -1,5 +1,5 @@
 import { useState, useEffect } from "react"
-import { Link, useParams } from "react-router"
+import { Link, useParams, useNavigate } from "react-router"
 import { Button } from "@/components/ui/button"
 import { useTheme } from "@/components/theme-provider"
 import {
@@ -24,6 +24,7 @@ interface BookPage {
   title: string;
   content: string;
   wordCount: number;
+  slug: string;
 }
 
 interface ReadingTheme {
@@ -253,13 +254,18 @@ function parseInlineMarkdown(text: string): string {
 }
 
 export default function Reader() {
-  const { docId } = useParams<{ docId: string }>()
+  const { docId, pageName } = useParams<{ docId: string; pageName?: string }>()
+  const navigate = useNavigate()
   const { theme, setTheme } = useTheme()
 
   const [pages, setPages] = useState<BookPage[]>([])
-  const [currentPageIndex, setCurrentPageIndex] = useState<number>(0)
   const [loading, setLoading] = useState<boolean>(true)
   const [error, setError] = useState<string | null>(null)
+
+  // Derived state: find active page by slug from the URL
+  const currentPageIndex = pageName
+    ? pages.findIndex((p) => p.slug === pageName)
+    : -1
 
   // Sidebar & Settings UI State
   const [sidebarOpen, setSidebarOpen] = useState<boolean>(() => {
@@ -385,17 +391,22 @@ export default function Reader() {
           }
 
           const words = content.trim().split(/\s+/).filter(Boolean).length
+          const slug = filename
+            .replace(/\.md$/, "")
+            .toLowerCase()
+            .replace(/[^a-z0-9]+/g, "-")
+            .replace(/(^-|-$)/g, "")
 
           loadedPages.push({
             filename,
             title: parsedTitle,
             content,
             wordCount: words,
+            slug,
           })
         }
 
         setPages(loadedPages)
-        setCurrentPageIndex(0)
       } catch (err: any) {
         console.error(err)
         setError(err.message || "An error occurred while loading the book.")
@@ -410,17 +421,25 @@ export default function Reader() {
   // Handle keypresses for navigation
   useEffect(() => {
     function handleKeyDown(e: KeyboardEvent) {
-      if (loading || error || pages.length === 0) return
+      if (loading || error || pages.length === 0 || !pageName || currentPageIndex === -1) return
       if (e.target instanceof HTMLInputElement || e.target instanceof HTMLTextAreaElement) {
         return
       }
 
       if (e.key === "ArrowLeft") {
-        setCurrentPageIndex((prev) => Math.max(0, prev - 1))
-        document.getElementById("reader-main")?.scrollTo({ top: 0 })
+        const prevIdx = Math.max(0, currentPageIndex - 1)
+        const prevPage = pages[prevIdx]
+        if (prevPage && prevIdx !== currentPageIndex) {
+          navigate(`/reader/${docId}/${prevPage.slug}`)
+          document.getElementById("reader-main")?.scrollTo({ top: 0 })
+        }
       } else if (e.key === "ArrowRight") {
-        setCurrentPageIndex((prev) => Math.min(pages.length - 1, prev + 1))
-        document.getElementById("reader-main")?.scrollTo({ top: 0 })
+        const nextIdx = Math.min(pages.length - 1, currentPageIndex + 1)
+        const nextPage = pages[nextIdx]
+        if (nextPage && nextIdx !== currentPageIndex) {
+          navigate(`/reader/${docId}/${nextPage.slug}`)
+          document.getElementById("reader-main")?.scrollTo({ top: 0 })
+        }
       }
     }
 
@@ -428,7 +447,7 @@ export default function Reader() {
     return () => {
       window.removeEventListener("keydown", handleKeyDown)
     }
-  }, [pages, loading, error])
+  }, [pages, loading, error, currentPageIndex, docId, pageName, navigate])
 
   // Reset scroll state on page change
   useEffect(() => {
@@ -471,7 +490,7 @@ export default function Reader() {
     return "max-w-2xl"
   }
 
-  const activePage = pages[currentPageIndex]
+  const activePage = pages[currentPageIndex] || null
   const readProgress = pages.length > 0 ? ((currentPageIndex + 1) / pages.length) * 100 : 0
   const totalWords = pages.reduce((acc, p) => acc + p.wordCount, 0)
 
@@ -641,7 +660,7 @@ export default function Reader() {
 
         {/* Left Section: Back link & Title */}
         <div className="flex items-center gap-3 min-w-0 flex-1">
-          <Link to="/" className="shrink-0">
+          <Link to={pageName ? `/reader/${docId}` : "/"} className="shrink-0">
             <Button variant="ghost" size="icon" className="reader-themed-btn h-9 w-9 rounded-full hover:bg-black/5 dark:hover:bg-white/5 transition-colors">
               <ArrowLeft className="h-4.5 w-4.5" />
             </Button>
@@ -656,25 +675,29 @@ export default function Reader() {
 
         {/* Right Section: Toolbar */}
         <div className="flex items-center gap-1.5 shrink-0 ml-4 relative">
-          <Button
-            variant="ghost"
-            size="icon"
-            className={`h-9 w-9 rounded-full transition-colors ${sidebarOpen ? "text-[#ff385c] bg-black/5 dark:bg-white/5" : "reader-themed-btn hover:bg-black/5 dark:hover:bg-white/5"}`}
-            onClick={() => setSidebarOpen(!sidebarOpen)}
-            title="Toggle Table of Contents"
-          >
-            <Menu className="h-4.5 w-4.5" />
-          </Button>
+          {pageName && (
+            <>
+              <Button
+                variant="ghost"
+                size="icon"
+                className={`h-9 w-9 rounded-full transition-colors ${sidebarOpen ? "text-[#ff385c] bg-black/5 dark:bg-white/5" : "reader-themed-btn hover:bg-black/5 dark:hover:bg-white/5"}`}
+                onClick={() => setSidebarOpen(!sidebarOpen)}
+                title="Toggle Table of Contents"
+              >
+                <Menu className="h-4.5 w-4.5" />
+              </Button>
 
-          <Button
-            variant="ghost"
-            size="icon"
-            className={`h-9 w-9 rounded-full transition-colors ${showSettings ? "text-[#ff385c] bg-black/5 dark:bg-white/5" : "reader-themed-btn hover:bg-black/5 dark:hover:bg-white/5"}`}
-            onClick={() => setShowSettings(!showSettings)}
-            title="Formatting Settings"
-          >
-            <Type className="h-4.5 w-4.5" />
-          </Button>
+              <Button
+                variant="ghost"
+                size="icon"
+                className={`h-9 w-9 rounded-full transition-colors ${showSettings ? "text-[#ff385c] bg-black/5 dark:bg-white/5" : "reader-themed-btn hover:bg-black/5 dark:hover:bg-white/5"}`}
+                onClick={() => setShowSettings(!showSettings)}
+                title="Formatting Settings"
+              >
+                <Type className="h-4.5 w-4.5" />
+              </Button>
+            </>
+          )}
 
           <Button
             variant="ghost"
@@ -698,7 +721,7 @@ export default function Reader() {
           </Button>
 
           {/* Settings Floating Panel */}
-          {showSettings && (
+          {pageName && showSettings && (
             <div className="absolute right-0 top-14 w-80 sm:w-88 rounded-xl border p-5 shadow-2xl z-50 flex flex-col gap-5 text-left animate-in fade-in slide-in-from-top-2 duration-200 reader-themed-paper">
               <div className="flex items-center justify-between border-b reader-themed-border-divider pb-2.5">
                 <span className="text-xs font-bold uppercase tracking-wider opacity-85">
@@ -882,74 +905,76 @@ export default function Reader() {
       <div className="flex flex-1 overflow-hidden relative">
 
         {/* Collapsible Left Sidebar: Chapters */}
-        <aside className={`reader-themed-sidebar absolute inset-y-0 left-0 z-30 w-72 border-r flex flex-col md:relative pt-16 transition-all duration-300 ease-in-out ${sidebarOpen && !isScrollingDown ? "translate-x-0 md:ml-0 opacity-100" : "-translate-x-full md:-ml-72 opacity-0 pointer-events-none"}`}>
-          <div className="flex items-center justify-between p-4 border-b reader-themed-border-divider">
-            <span className="text-[11px] font-bold tracking-wider opacity-70 uppercase">
-              Table of Contents
-            </span>
-            <button
-              onClick={() => setSidebarOpen(false)}
-              className="h-7 w-7 flex items-center justify-center rounded-full reader-themed-btn hover:bg-black/5 dark:hover:bg-white/5 md:hidden"
-            >
-              <X className="h-4 w-4" />
-            </button>
-          </div>
-
-          <div className="flex-1 overflow-y-auto p-3 space-y-1">
-            {loading ? (
-              <div className="flex items-center justify-center py-12 text-neutral-400 text-xs">
-                <Loader2 className="mr-2 h-4 w-4 animate-spin" />
-                Loading chapters...
-              </div>
-            ) : error ? (
-              <div className="text-[#c13515] text-xs p-3">
-                Error loading list.
-              </div>
-            ) : (
-              pages.map((p, idx) => {
-                const isActive = idx === currentPageIndex
-                return (
-                  <button
-                    key={p.filename}
-                    onClick={() => {
-                      setCurrentPageIndex(idx)
-                      // Collapse sidebar on small screens after clicking
-                      if (window.innerWidth < 768) {
-                        setSidebarOpen(false)
-                      }
-                      document.getElementById("reader-main")?.scrollTo({ top: 0 })
-                    }}
-                    className={`w-full flex items-start gap-3 rounded-md p-3 text-left text-sm border transition-all duration-200 ${isActive ? "reader-themed-sidebar-btn-active font-medium" : "reader-themed-sidebar-btn hover:bg-black/5 dark:hover:bg-white/5"}`}
-                  >
-                    <span className="text-[10px] font-mono font-bold opacity-50 mt-0.5 select-none w-5">
-                      {String(idx + 1).padStart(2, "0")}
-                    </span>
-                    <div className="flex-1 overflow-hidden">
-                      <span className="truncate block font-medium">{p.title}</span>
-                      <span className="text-[10px] opacity-60">
-                        {p.wordCount.toLocaleString()} words
-                      </span>
-                    </div>
-                  </button>
-                )
-              })
-            )}
-          </div>
-
-          {/* Sidebar Footer */}
-          {!loading && !error && pages.length > 0 && (
-            <div className="reader-themed-footer border-t p-4 text-xs">
-              <div className="flex justify-between mb-1">
-                <span>Total Words:</span>
-                <span className="font-semibold">{totalWords.toLocaleString()}</span>
-              </div>
-              <div className="flex justify-between">
-                <span>Progress:</span>
-                <span className="font-semibold">{Math.round(readProgress)}%</span>
-              </div>
+        {pageName && (
+          <aside className={`reader-themed-sidebar absolute inset-y-0 left-0 z-30 w-72 border-r flex flex-col md:relative pt-16 transition-all duration-300 ease-in-out ${sidebarOpen && !isScrollingDown ? "translate-x-0 md:ml-0 opacity-100" : "-translate-x-full md:-ml-72 opacity-0 pointer-events-none"}`}>
+            <div className="flex items-center justify-between p-4 border-b reader-themed-border-divider">
+              <span className="text-[11px] font-bold tracking-wider opacity-70 uppercase">
+                Table of Contents
+              </span>
+              <button
+                onClick={() => setSidebarOpen(false)}
+                className="h-7 w-7 flex items-center justify-center rounded-full reader-themed-btn hover:bg-black/5 dark:hover:bg-white/5 md:hidden"
+              >
+                <X className="h-4 w-4" />
+              </button>
             </div>
-          )}
-        </aside>
+
+            <div className="flex-1 overflow-y-auto p-3 space-y-1">
+              {loading ? (
+                <div className="flex items-center justify-center py-12 text-neutral-400 text-xs">
+                  <Loader2 className="mr-2 h-4 w-4 animate-spin" />
+                  Loading chapters...
+                </div>
+              ) : error ? (
+                <div className="text-[#c13515] text-xs p-3">
+                  Error loading list.
+                </div>
+              ) : (
+                pages.map((p, idx) => {
+                  const isActive = idx === currentPageIndex
+                  return (
+                    <button
+                      key={p.filename}
+                      onClick={() => {
+                        navigate(`/reader/${docId}/${p.slug}`)
+                        // Collapse sidebar on small screens after clicking
+                        if (window.innerWidth < 768) {
+                          setSidebarOpen(false)
+                        }
+                        document.getElementById("reader-main")?.scrollTo({ top: 0 })
+                      }}
+                      className={`w-full flex items-start gap-3 rounded-md p-3 text-left text-sm border transition-all duration-200 ${isActive ? "reader-themed-sidebar-btn-active font-medium" : "reader-themed-sidebar-btn hover:bg-black/5 dark:hover:bg-white/5"}`}
+                    >
+                      <span className="text-[10px] font-mono font-bold opacity-50 mt-0.5 select-none w-5">
+                        {String(idx + 1).padStart(2, "0")}
+                      </span>
+                      <div className="flex-1 overflow-hidden">
+                        <span className="truncate block font-medium">{p.title}</span>
+                        <span className="text-[10px] opacity-60">
+                          {p.wordCount.toLocaleString()} words
+                        </span>
+                      </div>
+                    </button>
+                  )
+                })
+              )}
+            </div>
+
+            {/* Sidebar Footer */}
+            {!loading && !error && pages.length > 0 && (
+              <div className="reader-themed-footer border-t p-4 text-xs">
+                <div className="flex justify-between mb-1">
+                  <span>Total Words:</span>
+                  <span className="font-semibold">{totalWords.toLocaleString()}</span>
+                </div>
+                <div className="flex justify-between">
+                  <span>Progress:</span>
+                  <span className="font-semibold">{Math.round(readProgress)}%</span>
+                </div>
+              </div>
+            )}
+          </aside>
+        )}
 
         {/* Center Reader Content */}
         <main
@@ -975,9 +1000,111 @@ export default function Reader() {
                 </Button>
               </Link>
             </div>
-          ) : pages.length === 0 ? (
-            <div className="flex-1 flex flex-col items-center justify-center text-center p-6">
-              <p className="text-[#6a6a6a] dark:text-[#a3a3a3]">No pages found in contents.txt.</p>
+          ) : !pageName ? (
+            <div className="w-full max-w-4xl flex-1 flex flex-col relative transition-all duration-300 animate-in fade-in slide-in-from-bottom-2 duration-300">
+              {/* Header / Hero Section */}
+              <div className="text-center md:text-left mb-8 md:mb-12 flex flex-col md:flex-row items-center md:items-start gap-6 md:gap-8 border-b reader-themed-border-divider pb-6 md:pb-10 pt-2 md:pt-4">
+                <div 
+                  className="w-40 h-40 md:w-48 md:h-48 rounded-2xl shadow-xl flex flex-col items-center justify-center text-white shrink-0"
+                  style={{ background: "linear-gradient(135deg, #ff385c 0%, #e00b41 100%)" }}
+                >
+                  <BookOpen className="h-12 w-12 md:h-16 md:w-16 mb-2 drop-shadow-md" />
+                  <span className="text-[10px] font-bold uppercase tracking-wider opacity-85">DOCUMENT SET</span>
+                </div>
+                <div className="flex-1 flex flex-col justify-center">
+                  <div className="flex flex-wrap items-center gap-2 mb-3 justify-center md:justify-start">
+                    <span className="px-2.5 py-0.5 text-[11px] font-bold rounded-full bg-[#ff385c]/10 text-[#ff385c]">
+                      Published
+                    </span>
+                    <span className="text-xs opacity-60">·</span>
+                    <span className="text-xs opacity-75 font-semibold">
+                      {pages.length} Pages
+                    </span>
+                    <span className="text-xs opacity-60">·</span>
+                    <span className="text-xs opacity-75 font-semibold">
+                      {totalWords.toLocaleString()} Words
+                    </span>
+                  </div>
+                  <h2 className="text-3xl md:text-4xl font-extrabold tracking-tight mb-4">
+                    {bookTitle}
+                  </h2>
+                  <p className="text-sm md:text-base opacity-75 leading-relaxed max-w-2xl mb-6">
+                    A collection of educational proposals and design documentation outlining modern reservation structures, educational architectures, and resource distribution models.
+                  </p>
+                  {pages.length > 0 && (
+                    <div className="flex justify-center md:justify-start">
+                      <Link to={`/reader/${docId}/${pages[0].slug}`}>
+                        <Button className="bg-[#ff385c] hover:bg-[#e00b41] text-white rounded-full px-6 py-5 font-semibold text-sm shadow-md transition-all">
+                          Start Reading
+                        </Button>
+                      </Link>
+                    </div>
+                  )}
+                </div>
+              </div>
+
+              {/* Chapters list grid */}
+              <div className="space-y-4 pb-12">
+                <h3 className="text-sm font-bold uppercase tracking-wider opacity-70 mb-4 text-left">
+                  Table of Contents
+                </h3>
+                <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+                  {pages.map((p, idx) => {
+                    const firstParagraph = p.content
+                      .split("\n")
+                      .map(line => line.trim())
+                      .filter(line => line.length > 0 && !line.startsWith("#") && !line.startsWith(">"))
+                      .find(line => line.length > 10) || "No description available."
+                    
+                    const cleanDesc = firstParagraph.length > 120 
+                      ? firstParagraph.slice(0, 120) + "..." 
+                      : firstParagraph
+
+                    return (
+                      <Link 
+                        key={p.filename} 
+                        to={`/reader/${docId}/${p.slug}`}
+                        className="group block"
+                      >
+                        <div className="reader-themed-paper border rounded-xl p-4 sm:p-5 h-full flex flex-col justify-between hover:border-[#ff385c] hover:shadow-md transition-all duration-200">
+                          <div>
+                            <div className="flex items-center justify-between mb-3">
+                              <span className="text-xs font-mono font-bold opacity-45">
+                                CHAPTER {String(idx + 1).padStart(2, "0")}
+                              </span>
+                              <span className="text-[10px] font-semibold opacity-60">
+                                {p.wordCount.toLocaleString()} words
+                              </span>
+                            </div>
+                            <h4 className="text-base font-bold tracking-tight mb-2 group-hover:text-[#ff385c] transition-colors text-left">
+                              {p.title}
+                            </h4>
+                            <p className="text-xs opacity-75 leading-relaxed text-left line-clamp-2">
+                              {cleanDesc}
+                            </p>
+                          </div>
+                          <div className="mt-4 pt-3 border-t reader-themed-border-divider flex items-center justify-end text-xs font-bold text-[#ff385c] opacity-90 sm:opacity-0 sm:group-hover:opacity-100 transition-all">
+                            <span>Read Chapter →</span>
+                          </div>
+                        </div>
+                      </Link>
+                    )
+                  })}
+                </div>
+              </div>
+            </div>
+          ) : currentPageIndex === -1 ? (
+            <div className="flex-1 flex flex-col items-center justify-center max-w-md mx-auto text-center p-6 bg-white dark:bg-[#0a0a0a] border border-[#dddddd] dark:border-[#2c2c2c] rounded-md shadow-sm">
+              <div className="flex h-12 w-12 items-center justify-center rounded-full bg-[#ffd1da] text-[#c13515] mb-4">
+                <BookOpen className="h-6 w-6" />
+              </div>
+              <h2 className="text-lg font-bold text-[#222222] dark:text-white mb-2">Page Not Found</h2>
+              <p className="text-sm text-[#6a6a6a] dark:text-[#a3a3a3] mb-6">The requested page "{pageName}" could not be found.</p>
+              <Link to={`/reader/${docId}`}>
+                <Button className="bg-[#ff385c] hover:bg-[#e00b41] text-white">
+                  Back to Table of Contents
+                </Button>
+              </Link>
             </div>
           ) : (
             <div className={`w-full flex-1 flex flex-col items-center relative transition-all duration-300 ${getWidthClass()}`}>
@@ -999,12 +1126,12 @@ export default function Reader() {
                     ...getLineHeightStyle(),
                     textAlign: alignment === "justify" ? "justify" : "left",
                   }}
-                  dangerouslySetInnerHTML={{ __html: parseMarkdown(activePage.content) }}
+                  dangerouslySetInnerHTML={{ __html: parseMarkdown(activePage ? activePage.content : "") }}
                 />
 
                 {/* Sub-status Indicator */}
                 <div className="mt-8 pt-4 border-t reader-themed-border-divider flex items-center justify-between text-xs opacity-60 select-none pointer-events-none">
-                  <span>{activePage.wordCount.toLocaleString()} words</span>
+                  <span>{activePage ? activePage.wordCount.toLocaleString() : 0} words</span>
                   <span>Chapter {currentPageIndex + 1} of {pages.length}</span>
                 </div>
               </div>
@@ -1019,8 +1146,12 @@ export default function Reader() {
                   {/* Previous Button */}
                   <Button
                     onClick={() => {
-                      setCurrentPageIndex((prev) => Math.max(0, prev - 1))
-                      document.getElementById("reader-main")?.scrollTo({ top: 0, behavior: "smooth" })
+                      const prevIdx = Math.max(0, currentPageIndex - 1)
+                      const prevPage = pages[prevIdx]
+                      if (prevPage) {
+                        navigate(`/reader/${docId}/${prevPage.slug}`)
+                        document.getElementById("reader-main")?.scrollTo({ top: 0, behavior: "smooth" })
+                      }
                     }}
                     disabled={currentPageIndex === 0}
                     variant="ghost"
@@ -1056,8 +1187,12 @@ export default function Reader() {
                   ) : (
                     <Button
                       onClick={() => {
-                        setCurrentPageIndex((prev) => Math.min(pages.length - 1, prev + 1))
-                        document.getElementById("reader-main")?.scrollTo({ top: 0, behavior: "smooth" })
+                        const nextIdx = Math.min(pages.length - 1, currentPageIndex + 1)
+                        const nextPage = pages[nextIdx]
+                        if (nextPage) {
+                          navigate(`/reader/${docId}/${nextPage.slug}`)
+                          document.getElementById("reader-main")?.scrollTo({ top: 0, behavior: "smooth" })
+                        }
                       }}
                       variant="ghost"
                       className="flex items-center gap-1.5 h-10 rounded-full reader-themed-btn hover:bg-black/5 dark:hover:bg-white/5 font-semibold border-none px-4 transition-all"

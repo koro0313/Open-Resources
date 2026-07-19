@@ -16,6 +16,10 @@ const router = createBrowserRouter([
     path: "/reader/:docId",
     Component: Reader,
   },
+  {
+    path: "/reader/:docId/:pageName",
+    Component: Reader,
+  },
 ])
 
 export function App() {
