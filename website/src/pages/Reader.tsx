@@ -12,7 +12,6 @@ import {
   Type,
   Loader2,
   BookOpen,
-  Settings,
   AlignLeft,
   AlignJustify,
   BookmarkCheck
@@ -345,13 +344,6 @@ export default function Reader() {
       setIsScrollingDown(false)
     }
   }, [sidebarOpen])
-
-  // Font class determinations
-  const getFontClass = () => {
-    if (fontFamily === "serif") return "font-serif"
-    if (fontFamily === "mono") return "font-mono"
-    return "font-sans"
-  }
 
   // Get specific font styles
   const getFontFamilyStyle = () => {

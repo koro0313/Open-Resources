@@ -9,7 +9,6 @@ import {
   Eye,
   BookOpen,
   FileText,
-  ChevronRight,
   Plus,
   Trash2,
   Bold,
@@ -19,8 +18,7 @@ import {
   Heading2,
   AlignLeft,
   AlignCenter,
-  AlignRight,
-  Star
+  AlignRight
 } from "lucide-react"
 
 interface Page {
@@ -139,11 +137,6 @@ export default function Editor() {
     setDeletedPages(deletedPages.filter((p) => p.id !== id));
     setPages([...pages, pageToRestore]);
     setSelectedPageId(id);
-  };
-
-  const togglePageStar = (id: string, e: React.MouseEvent) => {
-    e.stopPropagation();
-    setPages(pages.map(p => p.id === id ? { ...p, starred: !p.starred } : p));
   };
 
   const handleInsertMarkdown = (before: string, after: string = "") => {
@@ -350,11 +343,14 @@ export default function Editor() {
             <div className="border-t border-[#dddddd] p-4 dark:border-[#2c2c2c] max-h-48 overflow-y-auto bg-[#f7f7f7] dark:bg-[#121212] shrink-0">
               <div className="flex items-center justify-between text-[10px] font-bold tracking-wider text-[#6a6a6a] dark:text-[#a3a3a3] uppercase mb-2">
                 <span>Trash Bin</span>
-                <Trash2
-                  className="h-3.5 w-3.5 cursor-pointer hover:text-[#ff385c] transition-colors"
+                <button
+                  type="button"
                   onClick={() => setDeletedPages([])}
                   title="Empty Trash"
-                />
+                  className="cursor-pointer text-inherit hover:text-[#ff385c] transition-colors bg-transparent border-0 p-0"
+                >
+                  <Trash2 className="h-3.5 w-3.5" />
+                </button>
               </div>
               <div className="space-y-1.5">
                 {deletedPages.map((p) => (
