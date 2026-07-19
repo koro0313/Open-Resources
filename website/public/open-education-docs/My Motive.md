@@ -69,7 +69,7 @@ I know it might not be perfect, and there might be many flaws that I have missed
 *   Suggest improvements.
 *   *Let's make it perfect together.*
 
-Even if you have a better version that completely goes against mine, feel free to speak up. This is an attempt to encourage the youth to shift their mindset from just complaining & spreading awareness to actually try to bring a change.
+Even if you have a better version that completely goes against mine, feel free to speak up. This is an attempt to encourage the youth to shift their mindset from just complaining to actually try to bring a change.
 
 It isn’t my model, it’s our model and if it actually turns out to be better, then more people will join in and the old system will either have to adapt or rot.
 
