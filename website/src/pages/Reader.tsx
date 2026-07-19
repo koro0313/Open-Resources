@@ -243,6 +243,9 @@ function parseInlineMarkdown(text: string): string {
   html = html.replace(/\*(.*?)\*/g, "<em>$1</em>");
   html = html.replace(/_(.*?)\_/g, "<em>$1</em>");
 
+  // Images (standard markdown syntax)
+  html = html.replace(/!\[(.*?)\]\((.*?)\)/g, "<img src='$2' alt='$1' class='my-6 max-w-full h-auto rounded-lg mx-auto shadow-md border dark:border-neutral-800' />");
+
   // Links
   html = html.replace(/\[(.*?)\]\((.*?)\)/g, "<a href='$2' class='text-[#ff385c] hover:underline' target='_blank' rel='noopener noreferrer'>$1</a>");
 
