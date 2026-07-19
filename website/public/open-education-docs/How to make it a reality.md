@@ -1,6 +1,6 @@
 # How to Make It a Reality
 
-We have the infrastructure, the schools, the colleges, the workforce, the teachers, and the students. The only thing missing is a shift in our collective mindset. We have all experienced the flaws of the current education system, witnessed the lack of accountability, and realized that this is a failing framework. 
+We have the infrastructure, the schools, the colleges, the workforce, the teachers, and the students. The only thing missing is a shift in our collective mindset. We have all experienced the flaws of the current education system, witnessed the lack of accountability, and realized that this is a failing system. 
 
 But the solution does not lie in pointing fingers at individuals. 
 
