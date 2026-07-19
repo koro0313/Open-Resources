@@ -2,6 +2,7 @@ import { useState, useEffect } from "react"
 import { Link, useParams, useNavigate } from "react-router"
 import { Button } from "@/components/ui/button"
 import { useTheme } from "@/components/theme-provider"
+import MarkdownRenderer from "@/components/MarkdownRenderer"
 import {
   ArrowLeft,
   ChevronLeft,
@@ -9,8 +10,6 @@ import {
   Menu,
   X,
   Type,
-  Sun,
-  Moon,
   Loader2,
   BookOpen,
   Settings,
@@ -135,123 +134,7 @@ const READER_THEMES: Record<string, ReadingTheme> = {
   },
 }
 
-// Dependency-free, lightweight line-by-line Markdown parsing function
-function parseMarkdown(md: string): string {
-  const lines = md.split("\n");
-  const html: string[] = [];
-  let inList = false;
-  let inCodeBlock = false;
-  let codeContent: string[] = [];
 
-  for (let line of lines) {
-    // Handle code blocks
-    if (line.trim().startsWith("```")) {
-      if (inCodeBlock) {
-        inCodeBlock = false;
-        html.push(`<pre class="p-4 rounded-lg font-mono text-sm my-4 overflow-x-auto"><code>${codeContent.join("\n")}</code></pre>`);
-        codeContent = [];
-      } else {
-        inCodeBlock = true;
-      }
-      continue;
-    }
-
-    if (inCodeBlock) {
-      const escaped = line
-        .replace(/&/g, "&amp;")
-        .replace(/</g, "&lt;")
-        .replace(/>/g, "&gt;");
-      codeContent.push(escaped);
-      continue;
-    }
-
-    // Handle empty lines (paragraphs break)
-    if (line.trim() === "") {
-      if (inList) {
-        html.push("</ul>");
-        inList = false;
-      }
-      html.push("<div class='h-4'></div>");
-      continue;
-    }
-
-    // Unordered lists
-    const listMatch = line.match(/^[\*\-\+]\s+(.*)/);
-    if (listMatch) {
-      if (!inList) {
-        html.push("<ul class='list-disc pl-6 my-2 space-y-2'>");
-        inList = true;
-      }
-      let content = listMatch[1];
-      content = parseInlineMarkdown(content);
-      html.push(`<li>${content}</li>`);
-      continue;
-    } else if (inList) {
-      html.push("</ul>");
-      inList = false;
-    }
-
-    // Headings
-    const headingMatch = line.match(/^(#{1,6})\s+(.*)/);
-    if (headingMatch) {
-      const level = headingMatch[1].length;
-      let content = headingMatch[2];
-      content = parseInlineMarkdown(content);
-      if (level === 1) {
-        html.push(`<h1 class="text-[24px] font-bold tracking-tight mt-6 mb-4 border-b pb-2">${content}</h1>`);
-      } else if (level === 2) {
-        html.push(`<h2 class="text-[20px] font-semibold tracking-tight mt-5 mb-3">${content}</h2>`);
-      } else if (level === 3) {
-        html.push(`<h3 class="text-lg font-medium tracking-tight mt-4 mb-2">${content}</h3>`);
-      } else {
-        html.push(`<h${level} class="text-base font-medium mt-3 mb-2">${content}</h${level}>`);
-      }
-      continue;
-    }
-
-    // Blockquotes
-    const blockquoteMatch = line.match(/^>\s*(.*)/);
-    if (blockquoteMatch) {
-      let content = blockquoteMatch[1];
-      content = parseInlineMarkdown(content);
-      html.push(`<blockquote class="border-l-4 border-[#ff385c] pl-4 italic my-4 py-2 pr-2 rounded-r-md">${content}</blockquote>`);
-      continue;
-    }
-
-    // Regular paragraph
-    let content = parseInlineMarkdown(line);
-    html.push(`<p class="leading-[1.6] my-3">${content}</p>`);
-  }
-
-  if (inList) {
-    html.push("</ul>");
-  }
-
-  return html.join("\n");
-}
-
-function parseInlineMarkdown(text: string): string {
-  let html = text
-    .replace(/&/g, "&amp;")
-    .replace(/</g, "&lt;")
-    .replace(/>/g, "&gt;");
-
-  // Bold
-  html = html.replace(/\*\*(.*?)\*\*/g, "<strong>$1</strong>");
-  html = html.replace(/__(.*?)__/g, "<strong>$1</strong>");
-
-  // Italic
-  html = html.replace(/\*(.*?)\*/g, "<em>$1</em>");
-  html = html.replace(/_(.*?)\_/g, "<em>$1</em>");
-
-  // Images (standard markdown syntax)
-  html = html.replace(/!\[(.*?)\]\((.*?)\)/g, "<img src='$2' alt='$1' class='my-6 max-w-full h-auto rounded-lg mx-auto shadow-md border dark:border-neutral-800' />");
-
-  // Links
-  html = html.replace(/\[(.*?)\]\((.*?)\)/g, "<a href='$2' class='text-[#ff385c] hover:underline' target='_blank' rel='noopener noreferrer'>$1</a>");
-
-  return html;
-}
 
 export default function Reader() {
   const { docId, pageName } = useParams<{ docId: string; pageName?: string }>()
@@ -635,6 +518,38 @@ export default function Reader() {
         .markdown-preview code {
           color: var(--reader-paper-fg) !important;
         }
+        .markdown-preview table {
+          width: 100%;
+          border-collapse: collapse;
+          margin: 1.5rem 0;
+          font-size: 0.95em;
+        }
+        .markdown-preview th {
+          border-bottom: 2.5px solid var(--reader-border) !important;
+          padding: 10px 12px;
+          font-weight: 600;
+          text-align: left;
+          color: var(--reader-paper-fg) !important;
+        }
+        .markdown-preview td {
+          border-bottom: 1px solid var(--reader-border) !important;
+          padding: 10px 12px;
+          color: var(--reader-paper-text) !important;
+        }
+        .markdown-preview tr:hover {
+          background-color: rgba(255, 56, 92, 0.02);
+        }
+        .markdown-preview input[type="checkbox"] {
+          margin-right: 0.5rem;
+          accent-color: #ff385c;
+          cursor: not-allowed;
+          width: 1rem;
+          height: 1rem;
+          vertical-align: middle;
+        }
+        .markdown-preview li {
+          margin-bottom: 0.25rem;
+        }
         .reader-themed-root,
         .reader-themed-header,
         .reader-themed-sidebar,
@@ -700,26 +615,7 @@ export default function Reader() {
             </>
           )}
 
-          <Button
-            variant="ghost"
-            size="icon"
-            className="reader-themed-btn h-9 w-9 rounded-full hover:bg-black/5 dark:hover:bg-white/5 transition-colors"
-            onClick={() => {
-              const currentThemeObj = READER_THEMES[readerTheme] || READER_THEMES.light
-              if (currentThemeObj.isDark) {
-                setReaderTheme("light")
-              } else {
-                setReaderTheme("dark")
-              }
-            }}
-            title="Toggle Color Theme"
-          >
-            {(READER_THEMES[readerTheme] || READER_THEMES.light).isDark ? (
-              <Sun className="h-4.5 w-4.5" />
-            ) : (
-              <Moon className="h-4.5 w-4.5" />
-            )}
-          </Button>
+
 
           {/* Settings Floating Panel */}
           {pageName && showSettings && (
@@ -1123,8 +1019,12 @@ export default function Reader() {
                       ...getLineHeightStyle(),
                       textAlign: alignment === "justify" ? "justify" : "left",
                     }}
-                    dangerouslySetInnerHTML={{ __html: parseMarkdown(activePage ? activePage.content : "") }}
-                  />
+                  >
+                    <MarkdownRenderer 
+                      content={activePage ? activePage.content : ""} 
+                      isDark={activeTheme.isDark} 
+                    />
+                  </article>
 
                   {/* Sub-status Indicator */}
                   <div className="mt-8 pt-4 border-t reader-themed-border-divider flex items-center justify-between text-xs opacity-60 select-none pointer-events-none">

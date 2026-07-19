@@ -1,6 +1,8 @@
 import { useState, useRef } from "react"
 import { Link } from "react-router"
 import { Button } from "@/components/ui/button"
+import { useTheme } from "@/components/theme-provider"
+import MarkdownRenderer from "@/components/MarkdownRenderer"
 import {
   ArrowLeft,
   Save,
@@ -28,143 +30,12 @@ interface Page {
   starred?: boolean;
 }
 
-// Dependency-free, lightweight line-by-line Markdown parsing function
-function parseMarkdown(md: string): string {
-  const lines = md.split("\n");
-  const html: string[] = [];
-  let inList = false;
-  let inCodeBlock = false;
-  let codeContent: string[] = [];
 
-  for (let line of lines) {
-    // Handle code blocks
-    if (line.trim().startsWith("```")) {
-      if (inCodeBlock) {
-        inCodeBlock = false;
-        html.push(`<pre class="bg-neutral-100 dark:bg-neutral-900 p-4 rounded-lg font-mono text-sm my-4 overflow-x-auto text-neutral-800 dark:text-neutral-200"><code>${codeContent.join("\n")}</code></pre>`);
-        codeContent = [];
-      } else {
-        inCodeBlock = true;
-      }
-      continue;
-    }
-
-    if (inCodeBlock) {
-      const escaped = line
-        .replace(/&/g, "&amp;")
-        .replace(/</g, "&lt;")
-        .replace(/>/g, "&gt;");
-      codeContent.push(escaped);
-      continue;
-    }
-
-    // Handle empty lines (paragraphs break)
-    if (line.trim() === "") {
-      if (inList) {
-        html.push("</ul>");
-        inList = false;
-      }
-      html.push("<div class='h-4'></div>");
-      continue;
-    }
-
-    // Unordered lists
-    const listMatch = line.match(/^[\*\-\+]\s+(.*)/);
-    if (listMatch) {
-      if (!inList) {
-        html.push("<ul class='list-disc pl-6 my-2 space-y-1 text-[#3f3f3f] dark:text-[#d4d4d4]'>");
-        inList = true;
-      }
-      let content = listMatch[1];
-      content = parseInlineMarkdown(content);
-      html.push(`<li>${content}</li>`);
-      continue;
-    } else if (inList) {
-      html.push("</ul>");
-      inList = false;
-    }
-
-    // Headings
-    const headingMatch = line.match(/^(#{1,6})\s+(.*)/);
-    if (headingMatch) {
-      const level = headingMatch[1].length;
-      let content = headingMatch[2];
-      content = parseInlineMarkdown(content);
-      if (level === 1) {
-        html.push(`<h1 class="text-[22px] font-medium tracking-tight text-[#222222] dark:text-white mt-6 mb-4 font-sans border-b border-[#ebebeb] dark:border-[#2c2c2c] pb-2">${content}</h1>`);
-      } else if (level === 2) {
-        html.push(`<h2 class="text-[20px] font-semibold tracking-tight text-[#222222] dark:text-white mt-5 mb-3 font-sans">${content}</h2>`);
-      } else if (level === 3) {
-        html.push(`<h3 class="text-lg font-medium tracking-tight text-[#222222] dark:text-white mt-4 mb-2 font-sans">${content}</h3>`);
-      } else {
-        html.push(`<h${level} class="text-base font-medium text-[#222222] dark:text-white mt-3 mb-2 font-sans">${content}</h${level}>`);
-      }
-      continue;
-    }
-
-    // Blockquotes
-    const blockquoteMatch = line.match(/^>\s*(.*)/);
-    if (blockquoteMatch) {
-      let content = blockquoteMatch[1];
-      content = parseInlineMarkdown(content);
-      html.push(`<blockquote class="border-l-4 border-[#ff385c] pl-4 italic text-[#6a6a6a] dark:text-[#a3a3a3] my-4">${content}</blockquote>`);
-      continue;
-    }
-
-    // HTML-style centering/alignment check within markdown
-    const centerMatch = line.match(/^<div\s+align="center">([\s\S]*?)<\/div>$/i);
-    if (centerMatch) {
-      html.push(`<div class="text-center">${parseInlineMarkdown(centerMatch[1])}</div>`);
-      continue;
-    }
-    const rightMatch = line.match(/^<div\s+align="right">([\s\S]*?)<\/div>$/i);
-    if (rightMatch) {
-      html.push(`<div class="text-right">${parseInlineMarkdown(rightMatch[1])}</div>`);
-      continue;
-    }
-
-    // Regular paragraph
-    let content = parseInlineMarkdown(line);
-    html.push(`<p class="leading-[1.5] text-base text-[#3f3f3f] dark:text-[#d4d4d4] my-2 font-sans">${content}</p>`);
-  }
-
-  if (inList) {
-    html.push("</ul>");
-  }
-  if (inCodeBlock && codeContent.length > 0) {
-    html.push(`<pre class="bg-neutral-100 dark:bg-neutral-900 p-4 rounded-lg font-mono text-sm my-4 overflow-x-auto text-neutral-800 dark:text-neutral-200"><code>${codeContent.join("\n")}</code></pre>`);
-  }
-
-  return html.join("\n");
-}
-
-function parseInlineMarkdown(text: string): string {
-  let html = text
-    .replace(/&/g, "&amp;")
-    .replace(/</g, "&lt;")
-    .replace(/>/g, "&gt;");
-
-  // Bold
-  html = html.replace(/\*\*(.*?)\*\*/g, "<strong>$1</strong>");
-  html = html.replace(/__(.*?)__/g, "<strong>$1</strong>");
-
-  // Italic
-  html = html.replace(/\*(.*?)\*/g, "<em>$1</em>");
-  html = html.replace(/_(.*?)\_/g, "<em>$1</em>");
-
-  // Underline
-  html = html.replace(/&lt;u&gt;(.*?)&lt;\/u&gt;/g, "<u>$1</u>");
-
-  // Inline code
-  html = html.replace(/`/g, "'");
-
-  // Links
-  html = html.replace(/\[(.*?)\]\((.*?)\)/g, "<a href='$2' class='text-[#ff385c] hover:underline' target='_blank' rel='noopener noreferrer'>$1</a>");
-
-  return html;
-}
 
 export default function Editor() {
+  const { theme } = useTheme()
+  const isDark = theme === "dark" || (theme === "system" && typeof window !== "undefined" && window.matchMedia("(prefers-color-scheme: dark)").matches)
+
   const [pages, setPages] = useState<Page[]>([
     {
       id: "1",
@@ -695,9 +566,10 @@ export default function Editor() {
                   <h1 className="text-[22px] font-medium tracking-tight text-[#222222] dark:text-white border-b border-[#ebebeb] dark:border-[#2c2c2c] pb-2">
                     {activePage.title || "Untitled Page"}
                   </h1>
-                  <div
+                  <MarkdownRenderer 
+                    content={activePage.content} 
+                    isDark={isDark} 
                     className="markdown-preview text-base leading-relaxed flex-1"
-                    dangerouslySetInnerHTML={{ __html: parseMarkdown(activePage.content) }}
                   />
                 </div>
               </div>
@@ -706,9 +578,10 @@ export default function Editor() {
                 <h1 className="text-[22px] font-medium tracking-tight text-[#222222] dark:text-white border-b border-[#ebebeb] dark:border-[#2c2c2c] pb-2">
                   {activePage.title || "Untitled Page"}
                 </h1>
-                <div
+                <MarkdownRenderer 
+                  content={activePage.content} 
+                  isDark={isDark} 
                   className="markdown-preview text-base leading-relaxed flex-1"
-                  dangerouslySetInnerHTML={{ __html: parseMarkdown(activePage.content) }}
                 />
               </div>
             ) : (
