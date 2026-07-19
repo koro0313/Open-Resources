@@ -42,4 +42,4 @@ The platform itself will be fully open source, and all the notes and other data 
 
 The code is completely open-source and licensed under the **AGPL-3.0** license, meaning technical people who believe in this vision can start contributing to it right away.
 
-*   [Explore the GitHub Repository](https://github.com/)
+*   [Explore the GitHub Repository](https://github.com/koro0313/Open-Resources)
