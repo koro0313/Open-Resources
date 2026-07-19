@@ -161,7 +161,7 @@ export default function Reader() {
 
   // Reading Preferences state (loaded from localStorage or fallback defaults)
   const [readerTheme, setReaderTheme] = useState<string>(() => {
-    return localStorage.getItem("reader-theme") || "light"
+    return localStorage.getItem("reader-theme") || "sepia"
   })
   const [fontFamily, setFontFamily] = useState<"sans" | "serif" | "mono">(() => {
     return (localStorage.getItem("reader-font-family") as any) || "serif"
@@ -171,13 +171,13 @@ export default function Reader() {
     return saved ? parseInt(saved, 10) : 18
   })
   const [lineHeight, setLineHeight] = useState<"compact" | "normal" | "relaxed">(() => {
-    return (localStorage.getItem("reader-line-height") as any) || "normal"
+    return (localStorage.getItem("reader-line-height") as any) || "compact"
   })
   const [alignment, setAlignment] = useState<"left" | "justify">(() => {
     return (localStorage.getItem("reader-alignment") as any) || "left"
   })
   const [readerWidth, setReaderWidth] = useState<"compact" | "normal" | "wide">(() => {
-    return (localStorage.getItem("reader-width") as any) || "normal"
+    return (localStorage.getItem("reader-width") as any) || "wide"
   })
 
   // Scroll visibility state
