@@ -45,7 +45,7 @@ export default function Landing() {
             <BookOpen className="h-5 w-5" />
           </div>
           <span className="text-xl font-bold tracking-tight text-[#ff385c]">
-            OpenBooks
+            Open Resources
           </span>
         </div>
 
@@ -148,7 +148,7 @@ export default function Landing() {
 
       {/* Minimal Footer */}
       <footer className="border-t border-[#dddddd] dark:border-[#2c2c2c] bg-white dark:bg-[#0a0a0a] py-8 text-center text-xs text-[#6a6a6a] dark:text-[#a3a3a3] transition-colors shrink-0">
-        <p>© 2026 OpenBooks. A clean, distraction-free writing space.</p>
+        <p>© 2026 Open Resources. A clean, distraction-free writing space.</p>
       </footer>
 
     </div>

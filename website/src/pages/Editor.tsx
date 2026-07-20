@@ -252,7 +252,7 @@ export default function Editor() {
           </Link>
           <div className="flex items-center gap-2">
             <BookOpen className="h-5 w-5 text-[#ff385c]" />
-            <span className="text-sm font-bold tracking-tight text-[#ff385c] hidden sm:inline">OpenBooks Workspace</span>
+            <span className="text-sm font-bold tracking-tight text-[#ff385c] hidden sm:inline">Open Resources Workspace</span>
           </div>
         </div>
 

@@ -61,7 +61,7 @@ Then, amid all this chaos, I came to know about **Sonam Wangchuk** and his schoo
 Now, as the nation is beginning to realize this problem and people are repeatedly calling for a better education system, I spent a week compiling all my ideas of what an ideal education system should be. This documentation is the result of that effort.
 
 ### Join the Collaborative Effort
-I humbly request you to take just **few minutes** of your time to go through these pages. I have even laid out how we can collectively implement this model in our country, even without the support of the government.
+I humbly request you to take just **few minutes** of your time to go through these pages. I have even laid out how we can collectively implement this model in our country—requesting government partnership for funding and legal recognition, while keeping our learning materials, schools, and evaluation agencies independent and community-driven.
 
 I know it might not be perfect, and there might be many flaws that I have missed. I welcome all criticism with open hands:
 *   Criticize the model.
@@ -72,5 +72,3 @@ I know it might not be perfect, and there might be many flaws that I have missed
 Even if you have a better version that completely goes against mine, feel free to speak up. This is an attempt to encourage the youth to shift their mindset from just complaining to actually try to bring a change.
 
 It isn’t my model, it’s our model and if it actually turns out to be better, then more people will join in and the old system will either have to adapt or rot.
-
-

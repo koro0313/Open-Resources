@@ -4,6 +4,6 @@ Open Resources.md
 Open Evaluation.md
 New Schooling System.md
 New Reservation System.md
+The Funding and Recognition Model.md
 How does this model work.md
 How to make it a reality.md
-

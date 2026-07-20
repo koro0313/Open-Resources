@@ -5,7 +5,7 @@ The current schooling system is built like a narrow funnel with two wide opening
 ![Schooling Funnel](/open-education-docs/schooling-funnel.png)
 
 In this traditional model:
-*   Students are forced to memorize ("mug up") history, geography, science, and language concepts to score marks, regardless of whether they understand them or not.
+*   Students are forced to memorize history, geography, science, and language concepts to score marks, regardless of whether they understand them or not.
 *   Mathematics is taught without any connection to its practical, real-world use.
 *   Students are discouraged from questioning and exploring, and are instead rewarded for staying quiet and conforming.
 *   Many exit the system unsure of what they want to achieve, having had their natural curiosity systematically suppressed.
@@ -82,6 +82,7 @@ Under this model, the school is no longer a factory for exams. Its duties are re
 By the time a student reaches the end of secondary school (10th or 12th standard), they will have a clear idea of what they want to achieve, backed by solid life skills. 
 
 ### The College Role:
+*   **Recognized Admissions Pathway:** Certificates and stage-based evaluations earned from school and recognized Open Evaluation agencies serve as valid, legally recognized qualifications for higher education and university admissions, replacing rigid centralized entrance exams.
 *   **Refinement & Practice:** The role of college is to refine the student's chosen direction and provide them with hands-on, professional, real-world experience.
 *   **No Long-Term Lock-in:** Unlike the current system where you are stuck in a college once you enroll, students will have the freedom to switch colleges after a cooldown period (e.g., 6 months). This allows students to gain diverse experiences across different institutions and find the environment that suits them best.
 

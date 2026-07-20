@@ -2,7 +2,7 @@
 
 We have the infrastructure, the schools, the colleges, the workforce, the teachers, and the students. The only thing missing is a shift in our collective mindset. We have all experienced the flaws of the current education system, witnessed the lack of accountability, and realized that this is a failing system. 
 
-But the solution does not lie in pointing fingers at individuals. 
+But the solution does not lie in pointing fingers at individuals.
 
 ---
 
@@ -20,45 +20,47 @@ We are all smart enough to know what is right and what is wrong for our growth. 
 
 ---
 
-## A Collective Call to Action
+## A Collective Call to Action: The Dual Strategy
 
-No single person can bring this change alone. I am just a random person on the internet. But we have a massive, passionate community of educators who have the trust, the resources, and the platform to make this a reality.
+No single person can bring this change alone. I am just a random person on the internet. But we have a massive, passionate community of educators, developers, parents, and policymakers who have the trust, resources, and platform to make this a reality.
 
-If you believe in this system, we need to draw the attention of the educators we trust:
-*   **Educators like:** Sonam Wangchuk, Alakh Pandey (PW), Khan Sir, Unacademy, Allen, Sir Ashu Ghai, Sir Tarun Rupani, Dear Sir, and many others.
-*   **What you can do:** Tag the educators you trust, share this framework, and voice your support. They have the resources and the voice to turn these ideas into practical, real-world institutions.
+To bring this vision to life, we pursue a **dual strategy**:
+1.  **Community-Led Execution:** We build and run Open Resources, independent Open Evaluation agencies, and stage-based schools directly without waiting for government permission.
+2.  **A Bounded Government Ask:** We actively campaign for the government to step in with a specific, limited partnership: (a) fund and operationally run the New Reservation System using public welfare infrastructure, and (b) grant official legal recognition to certificates issued by vetted Open Evaluation agencies for jobs, licensure, and university admissions.
 
 ---
 
 ## The Roles We Must Play
 
-To make this model a reality, we must build it together. Every group in society has a critical role to play:
+To make this model a reality, every group in society has a critical role to play:
 
 ### 1. Schools and Colleges
 *   **Adopt the New Schooling System:** Shift focus from rote memorization and rigid curriculums to character development, confidence, sports, and real-world skills like financial literacy. Give students the freedom to explore their actual interests.
 
 ### 2. Prominent Educators
-*   **Build Open Evaluation Agencies:** Establish independent, credible, and practical evaluation agencies that test genuine skills. Create courses, lab work, hackathons, and certifications that the industry respects.
+*   **Build Open Evaluation Agencies:** Establish independent, credible, and practical evaluation agencies that test genuine skills. Create courses, lab work, hackathons, and certifications that the industry and government respect.
 
-### 3. The Community
+### 3. The Community & Developers
 *   **Build Open Resources:** Collaborate to create free, high-quality, up-to-date learning materials. Make education accessible to anyone, anywhere, at any time.
 
 ### 4. Dedicated Individuals
-*   **Act as Reservation Agents:** Join as local physical verification agents to ensure needs-based reservations are issued fairly, transparently, and with strict accountability.
+*   **Support Verification & Audits:** Participate as civic monitors and auditors in the community reporting system to keep verification transparent and fraud-free.
 
-### 5. Parents and Students
+### 5. Government
+*   **Fund the Reservation System & Legally Recognize Certificates:** Provide nationwide funding and legal authority for the physical verification reservation system. Establish transparent, objective accreditation criteria to legally recognize Open Evaluation certificates for jobs, licensure, and higher education—**without controlling curriculum, content, or agency operations**.
+
+### 6. Parents and Students
 *   **Opt-In:** Parents who have lost faith in the current system can choose this open model for their children. Students can choose to learn at their own pace, focusing on mastery rather than standardized pressure.
 
 ---
 
-## This is a Choice, Not a Revolt
+## A Community-Led Vision with a Targeted Government Partnership
 
-We are not boycotting the government's system, and we are not going against the government. This is not a revolt. 
+We are not boycotting the government, and we are not starting a revolt. This is a constructive, democratic effort to modernize education through community initiative and targeted public partnership.
 
-This is democracy supported by choice and constructive competition. We are simply opting for a system we believe is better for us. 
-*   If our system actually produces quality, more people will join, and the current system will either have to adapt or rot.
-*   If the government eventually wishes to adopt this model, that would be the best possible outcome. 
-*   But if they take actions against a peaceful, community-driven effort to educate our own youth, it would make it clear to everyone that the system cares more about control than education. If they choose to stay silent, then we must build it together.
+*   **Community Independence:** We build the learning resources, schools, and evaluation methods independently so that education remains flexible, modern, and free from administrative gatekeeping.
+*   **Targeted Government Ask:** We request the government to fulfill its essential public duties—funding equity for underprivileged students through the Reservation System and granting legal validity to non-traditional credentials.
+*   **Constructive Evolution:** If the government adopts this partnership ask, it creates the best possible outcome for the nation. If government action is delayed, the community continues to build and run the learning and evaluation pillars independently.
 
 ---
 
