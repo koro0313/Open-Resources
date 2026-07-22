@@ -79,6 +79,16 @@ To see how this ecosystem reshapes education, let us follow five hypothetical st
 
 ---
 
+### 6. Rohan: The Late Bloomer / Lost Learner
+*Rohan has no obvious passions or academic talents. Unlike Aarav or Priya, he is completely lost, struggles with basic concepts, and has no idea what career path to pursue. In the traditional system, he would have been held back repeatedly, labeled a failure, and eventually dropped out with destroyed self-esteem. Under the Open Education Model, Rohan remains in the secondary schooling phase until he is 20, performing poorly on standard metrics.*
+
+*   **A Low-Pressure Sanctuary:** Because the school system does not force students through rigid age-based classes or threaten them with expulsion for slow progress, Rohan is allowed to stay in school without shame. The school's focus shifts from forcing academic compliance to supporting his personal well-being, character development, and life skills (such as finance, confidence, and communication).
+*   **System-Guided Exploration:** Rather than leaving him to drift, the school's **active guidance** framework includes **exploratory rotations** and **practical life-skills projects** specifically designed for undecided students. Mentors guide Rohan through various hands-on roles, from managing library inventory to helping coordinate local community-service operations.
+*   **The Spark of Discovery:** At age 16, during a guided school-run project where he is assigned to coordinate the hosting logistics for an external Open Evaluation event, Rohan discovers a natural talent for logistical planning, coordination, and community kitchen management. Using the platform's Open Resources, he takes introductory courses on hospitality management and culinary arts.
+*   **The Outcome:** Rohan works closely with school mentors to build a basic practical portfolio. He passes a localized Open Evaluation in event coordination and hospitality, earning a government-recognized credential. He transitions into a junior coordinator role at a local community center. The system's patience and lack of rigid age limits allowed him to grow and find his place in society on his own timeline, rather than being discarded by the wayside.
+
+---
+
 ## A Self-Regulating Cycle of Trust
 
 The ultimate power of this model lies in how community self-regulation and bounded government support reinforce one another:
